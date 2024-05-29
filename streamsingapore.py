@@ -58,7 +58,7 @@ if selected == "About Project":
 
 if selected == "Predictions":
     st.markdown("# :blue[Predicting Results based on Trained Models]")
-    st.markdown("### :orange[Predicting Resale Price (Regression Task)]")
+    st.markdown("### :orange[Predicting Resale Price (Regression Task,Accuracy:82%)]")
 
     with st.form("form1"):
 
@@ -79,7 +79,7 @@ if selected == "Predictions":
                 scaler_loaded = pickle.load(f)
 
             
-            lease_remain_years = 99 - (2023 - lease_commence_date)
+            lease_remain_years = 99 - (2024 - lease_commence_date)
 
            
             split_list = storey_range.split(' TO ')
