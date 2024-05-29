@@ -22,6 +22,9 @@ icon = Image.open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore predic
 with open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\Animation - 1716999046955.json", 'r') as f:
     data = json.load(f)
 
+with open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\Animation - 1717014736285.json", 'r') as ff:
+    data1 = json.load(ff)
+
 st.set_page_config(page_title="Singapore Resale Flat Price Prediction | By SUNIL RAGAV",
                    page_icon=icon,
                    layout="wide",
@@ -61,18 +64,21 @@ if selected == "Predictions":
     st.markdown("### :orange[Predicting Resale Price (Regression Task,Accuracy:82%)]")
 
     with st.form("form1"):
-
+        col1,col2,col3=st.columns([3,1,2])
+        with col1:
        
-        street_name = st.selectbox("Street Name", street)
-        block = st.text_input("Block Number")
-        floor_area_sqm = st.number_input('Floor Area (Per Square Meter)', min_value=1.0, max_value=500.0)
-        lease_commence_date = st.number_input('Lease Commence Date')
-        storey_range = st.text_input("Storey Range (Format: 'Value1' TO 'Value2')")
+            street_name = st.selectbox("Street Name", street)
+            block = st.text_input("Block Number")
+            floor_area_sqm = st.number_input('Floor Area (Per Square Meter)', min_value=1.0, max_value=500.0)
+            lease_commence_date = st.number_input('Lease Commence year')
+            storey_range = st.text_input("Storey Range (Format: 'Value1' TO 'Value2')")
 
-        
-        submit_button = st.form_submit_button(label="PREDICT RESALE PRICE")
+            
+            submit_button = st.form_submit_button(label="PREDICT RESALE PRICE")
+        with col3:
+            st_lottie(data1, reverse=True, height=400, width=400, speed=1, loop=True, quality='high', key='spinner2')
 
-        if submit_button:
+if submit_button:
             with open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\singamodel.pkl", 'rb') as file:
                 loaded_model = pickle.load(file)
             with open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\singascaler.pkl", 'rb') as f:
@@ -88,7 +94,7 @@ if selected == "Predictions":
 
            
             address = block + " " + street_name + " " + "Singapore"
-            st.write(address)
+            st.write("Address:",address)
 
             geolocator = Nominatim(user_agent="geo")
 
@@ -96,14 +102,14 @@ if selected == "Predictions":
                 location = geolocator.geocode(address)
                 if location:
                     resp = (location.latitude, location.longitude)
-                    st.write(resp)
+                    st.write("coordinates:",resp)
 
                     
                     mrt_lat = mrt_location['lat']
                     mrt_long = mrt_location['lng']
                     list_of_mrt_coordinates = list(zip(mrt_lat, mrt_long))
 
-                    st.write(list_of_mrt_coordinates)
+                    # st.write(list_of_mrt_coordinates)
 
                     
                     list_of_dist_mrt = []
@@ -122,7 +128,7 @@ if selected == "Predictions":
                         st.error("No valid MRT coordinates provided")
                         min_dist_mrt = None
 
-                    st.write("Minimum distance to an MRT station:", min_dist_mrt)
+                    # st.write("Minimum distance to an MRT station:", min_dist_mrt)
 
                     
                     cbd_dist = geodesic(resp, (1.2830, 103.8513)).meters  # CBD coordinates
