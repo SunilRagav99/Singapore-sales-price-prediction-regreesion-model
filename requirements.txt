@@ -1,10 +1,9 @@
-import numpy as np
-import statistics
-import pandas as pd
-from streamlit_lottie import st_lottie
-from PIL import Image
-import json
-import pickle
+numpy as np
+statistics
+pandas as pd
+streamlit_lottie
+json
+pickle
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
 from geopy.exc import GeocoderServiceError
