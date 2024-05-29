@@ -11,18 +11,18 @@ from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
 from geopy.exc import GeocoderServiceError
 
-data = pd.read_csv(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\mrt_lrt_data.csv")
+data = pd.read_csv("mrt_lrt_data.csv")
 mrt_location = pd.DataFrame(data)
 
-datacombine = pd.read_csv(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\combined.csv")
+datacombine = pd.read_csv("combined.csv")
 ad = datacombine["address"].unique()
 street = datacombine["street_name"].unique()
 
-icon = Image.open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\8345929.png")
-with open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\Animation - 1716999046955.json", 'r') as f:
+icon = Image.open("8345929.png")
+with open("Animation - 1716999046955.json", 'r') as f:
     data = json.load(f)
 
-with open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\Animation - 1717014736285.json", 'r') as ff:
+with open("Animation - 1717014736285.json", 'r') as ff:
     data1 = json.load(ff)
 
 st.set_page_config(page_title="Singapore Resale Flat Price Prediction | By SUNIL RAGAV",
@@ -79,9 +79,9 @@ if selected == "Predictions":
             st_lottie(data1, reverse=True, height=400, width=400, speed=1, loop=True, quality='high', key='spinner2')
 
 if submit_button:
-            with open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\singamodel.pkl", 'rb') as file:
+            with open("singamodel.pkl", 'rb') as file:
                 loaded_model = pickle.load(file)
-            with open(r"C:\Users\sunil\OneDrive\Desktop\python guvi\singapore prediction\singascaler.pkl", 'rb') as f:
+            with open("singascaler.pkl", 'rb') as f:
                 scaler_loaded = pickle.load(f)
 
             
