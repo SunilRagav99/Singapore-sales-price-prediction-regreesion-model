@@ -90,75 +90,75 @@ if selected == "Predictions":
         with col3:
             st_lottie(data1, reverse=True, height=400, width=400, speed=1, loop=True, quality='high', key='spinner2')
 
-if submit_button:
-            with open("singamodel.pkl", 'rb') as file:
-                loaded_model = pickle.load(file)
-            with open("singascaler.pkl", 'rb') as f:
-                scaler_loaded = pickle.load(f)
-
-            
-            lease_remain_years = 99 - (2024 - lease_commence_date)
-
-           
-            split_list = storey_range.split(' TO ')
-            float_list = [float(i) for i in split_list]
-            storey_median = statistics.median(float_list)
-
-           
-            address = block + " " + street_name + " " + "Singapore"
-            st.write("Address:",address)
-
-            geolocator = Nominatim(user_agent="geo")
-
-            try:
-                location = geolocator.geocode(address)
-                if location:
-                    resp = (location.latitude, location.longitude)
-                    st.write("coordinates:",resp)
-
-                    
-                    mrt_lat = mrt_location['lat']
-                    mrt_long = mrt_location['lng']
-                    list_of_mrt_coordinates = list(zip(mrt_lat, mrt_long))
-
-                    # st.write(list_of_mrt_coordinates)
-
-                    
-                    list_of_dist_mrt = []
-
-                    for mrt_coord in list_of_mrt_coordinates:
-                        try:
-                            distance = geodesic(resp, mrt_coord).meters
-                            list_of_dist_mrt.append(distance)
-                        except ValueError as e:
-                            st.error(f"Error calculating distance: {e}")
-                            continue
-
-                    if list_of_dist_mrt:
-                        min_dist_mrt = min(list_of_dist_mrt)
+    if submit_button:
+                with open("singamodel.pkl", 'rb') as file:
+                    loaded_model = pickle.load(file)
+                with open("singascaler.pkl", 'rb') as f:
+                    scaler_loaded = pickle.load(f)
+    
+                
+                lease_remain_years = 99 - (2024 - lease_commence_date)
+    
+               
+                split_list = storey_range.split(' TO ')
+                float_list = [float(i) for i in split_list]
+                storey_median = statistics.median(float_list)
+    
+               
+                address = block + " " + street_name + " " + "Singapore"
+                st.write("Address:",address)
+    
+                geolocator = Nominatim(user_agent="geo")
+    
+                try:
+                    location = geolocator.geocode(address)
+                    if location:
+                        resp = (location.latitude, location.longitude)
+                        st.write("coordinates:",resp)
+    
+                        
+                        mrt_lat = mrt_location['lat']
+                        mrt_long = mrt_location['lng']
+                        list_of_mrt_coordinates = list(zip(mrt_lat, mrt_long))
+    
+                        # st.write(list_of_mrt_coordinates)
+    
+                        
+                        list_of_dist_mrt = []
+    
+                        for mrt_coord in list_of_mrt_coordinates:
+                            try:
+                                distance = geodesic(resp, mrt_coord).meters
+                                list_of_dist_mrt.append(distance)
+                            except ValueError as e:
+                                st.error(f"Error calculating distance: {e}")
+                                continue
+    
+                        if list_of_dist_mrt:
+                            min_dist_mrt = min(list_of_dist_mrt)
+                        else:
+                            st.error("No valid MRT coordinates provided")
+                            min_dist_mrt = None
+    
+                        # st.write("Minimum distance to an MRT station:", min_dist_mrt)
+    
+                        
+                        cbd_dist = geodesic(resp, (1.2830, 103.8513)).meters  # CBD coordinates
+    
+                        
+                        if min_dist_mrt is not None:
+                            new_sample = np.array(
+                                [[cbd_dist, min_dist_mrt, np.log(floor_area_sqm), lease_remain_years, np.log(storey_median)]])
+                            # st.write(cbd_dist)
+                            # st.write(min_dist_mrt)
+                            # st.write(floor_area_sqm)
+                            # st.write(lease_remain_years)
+                            # st.write(storey_median)
+                            new_sample = scaler_loaded.transform(new_sample)
+                            new_pred = loaded_model.predict(new_sample)
+                            st.write('## :green[Predicted resale price:] ',new_pred[0])
                     else:
-                        st.error("No valid MRT coordinates provided")
-                        min_dist_mrt = None
-
-                    # st.write("Minimum distance to an MRT station:", min_dist_mrt)
-
-                    
-                    cbd_dist = geodesic(resp, (1.2830, 103.8513)).meters  # CBD coordinates
-
-                    
-                    if min_dist_mrt is not None:
-                        new_sample = np.array(
-                            [[cbd_dist, min_dist_mrt, np.log(floor_area_sqm), lease_remain_years, np.log(storey_median)]])
-                        # st.write(cbd_dist)
-                        # st.write(min_dist_mrt)
-                        # st.write(floor_area_sqm)
-                        # st.write(lease_remain_years)
-                        # st.write(storey_median)
-                        new_sample = scaler_loaded.transform(new_sample)
-                        new_pred = loaded_model.predict(new_sample)
-                        st.write('## :green[Predicted resale price:] ',new_pred[0])
-                else:
-                    st.error("Address could not be geocoded. Please check the address entered.")
-            except GeocoderServiceError as e:
-                st.error(f"Geocoding service error: {e}")
-
+                        st.error("Address could not be geocoded. Please check the address entered.")
+                except GeocoderServiceError as e:
+                    st.error(f"Geocoding service error: {e}")
+    
